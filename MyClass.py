@@ -1,8 +1,11 @@
 import pymysql
 import os
-#import requests
+import logging
+logging.basicConfig(level = logging.CRITICAL,format = '%(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+import requests
 import datetime
-db = pymysql.connect("192.168.3.123", "ght", "ght", "github")
+db = pymysql.connect(host="10.1.1.61", port=36810, user="visitor", passwd="visitor", db="ghtorrent_restore")
 cursor = db.cursor()
 cursor.execute("SELECT VERSION()")
 data = cursor.fetchone()
@@ -11,7 +14,7 @@ print ("Database version : %s " % data)
 class Project(object):
     def __init__(self, id):
         self.proj_id = id
-        # get name from mysql, don't know how to get star
+        # get name from mysql, get star by func setProjStar --> change db table to add one column to store stars ?
         sql = 'select name, url from projects where id=' + str(self.proj_id)
         cursor.execute(sql)
         res = cursor.fetchall()
@@ -26,12 +29,13 @@ class Project(object):
         self.proj_dir = os.path.join(repdir, self.name)
 
     def setAvgVio(self, avgVio): # use this to replace v0 param
-        self.AvgVio = avgVio
+        self.avgVio = avgVio
 
 class Developer(object):
+    # not used
     @staticmethod
-    def getAllIdFromMysql():
-        dbSO_GH = pymysql.connect("192.168.3.123", "root", "123456", "SO_GH")
+    def getAllTestld():
+        dbSO_GH = pymysql.connect(host="10.1.1.61", port=36810, user="visitor", passwd="visitor", db="stackoverflow_github")
         cursorSO_GH = dbSO_GH.cursor()
         sql = 'select github_user_id from stackoverflow_github_users'
         cursorSO_GH.execute(sql)
@@ -40,7 +44,8 @@ class Developer(object):
         for idres in res:
             devList.append(int(idres[0]))
         # for debug
-        print(len(devList), devList[:5])
+        logger.info("get test devs id from SO_GH dataset. All devs number and first 5 dev id show like below:")
+        logger.info(len(devList), devList[:5])
         return devList
 
     def __init__(self, id):
@@ -52,9 +57,10 @@ class Developer(object):
         self.score = Violation.EmptyVioClassDict.copy()
         self.fileNumber = 0
         # for 'efficiency'
-        self.solvedIssueNumber = 0
-        self.workingTime = 0
+        self.solveIssueNumber = 0
+        self.workTime = 0
 
+    # not used
     def isMemberOf(self, proj_id):
         sql = 'select * from project_members where repo_id=' + str(proj_id) + ' and user_id=' + str(self.dev_id)
         cursor.execute(sql)
@@ -79,7 +85,7 @@ class Commit(object):
             print("CommitNotFoundException")
 
     def hasParent(self):
-        # go into mysql and find self.parent
+        # search db and set
         sql = 'select parent_id from commit_parents where commit_id=' + str(self.com_id)
         cursor.execute(sql)
         res = cursor.fetchall()
@@ -101,7 +107,7 @@ class Commit(object):
         return self.parent
 
 class Myfile(object):
-    def __init__(self, filefullname, violist, loc, level):
+    def __init__(self, filefullname, violist, loc, level=1):
         self.fileFullName = filefullname
         self.vioList = violist
         self.LOC = loc
@@ -124,9 +130,9 @@ class Viopresent(object):
         self.pretime = 0 # present times
 
 class Issue(object):
-    def __init__(self, issueId, proj):
+    def __init__(self, issueId, proj_id):
         self.issue_id = issueId
-        self.proj = proj
+        self.iss_proj_id = proj_id
         sql = 'select repo_id , reporter_id , assignee_id , pull_request , pull_request_id , created_at , issue_id from issues where issue_id=' + str(self.issue_id) + ' and repo_id=' + str(self.proj.proj_id)
         cursor.execute(sql)
         res = cursor.fetchall()
@@ -139,18 +145,18 @@ class Issue(object):
     def getEfficiencyData(self):
         if self.iss_hasPr == False:
             self.iss_devEff = 0
-        pr = PullRequest(self.iss_pr_id, self.proj)
+        pr = PullRequest(self.iss_pr_id, self.iss_proj_id)
         delta1 = pr.pr_merge_at - self.iss_create_at
         self.iss_duringTime = delta1.days+delta1.seconds/(24*60*60) # convert to days
         self.iss_workLoad = pr.pr_workLoad
         self.iss_devEff = self.iss_workLoad / self.iss_duringTime
 
 class PullRequest(object):
-    def __init__(self, prId, base_proj):
-        self.pr_proj = base_proj.proj_id
+    def __init__(self, prId, base_proj_id):
+        self.pr_proj = base_proj_id
         self.pr_id = prId # id in proj, not in mysql.
         self.getEfficiencyData()
-'''
+
     def getEfficiencyData(self):
         addLineNum = 0
         subLineNum = 0
@@ -159,26 +165,29 @@ class PullRequest(object):
         # https://github.com/contao/core/pull/4542
         res = requests.get(self.pr_proj.url + '/pull/' + str(self.pr_id))
         res.encoding = 'utf-8'
-        posi0 = res.find("<relative-time datetime=")
+        res = res.text
+        posi0 = res.text.find("<relative-time datetime=")
+        res1 = res[posi0:min(posi0+1000, len(res))]
         self.pr_merge_at = datetime.datetime.strptime(res[posi0 + 25: posi0 + 35], "%Y-%m-%d")
 
-
-
-        posi0 = res.find("diffstat")
-        posi1 = res.find("\n",beg=posi0)
-        posi2 = res.find("\n",beg=posi1)
-        if res.find("text-green",beg=posi1, end=posi2) != -1:
+        posi0 = res1.find("diffstat")
+        posi1 = res1.find("\n", posi0 + 1)
+        posi2 = res1.find("\n", posi1 + 1)
+        addLineNum = 0
+        subLineNum = 0
+        if res1.find("text-green", posi1 + 1, posi2) != -1:
             posi1 = posi2
-            posi2 = res.find("\n",beg=posi1)
-            addLineNum = int(res[posi1+1:posi2])
-            posi1 = res.find("\n", beg=posi2)
-            posi2 = res.find("\n", beg=posi1)
-        if res.find("text-red",beg=posi1, end=posi2) != -1
+            posi2 = res1.find("\n", posi1 + 1)
+            addLineNum = int(res1[posi1:posi2].strip())
+            posi1 = res1.find("\n", posi2 + 1)
+            posi2 = res1.find("\n", posi1 + 1)
+        if res1.find("text-red", posi1 + 1, posi2) != -1:
             posi1 = posi2
-            posi2 = res.find("\n", beg=posi1)
-            subLineNum = int(res[posi1 + 1:posi2])
+            posi2 = res1.find("\n", posi1 + 1)
+            tmp = res1[posi1:posi2].strip()
+            subLineNum = -int(tmp[1:])
         self.pr_workLoad = addLineNum + subLineNum
-'''
+
 
 '''
 ...

@@ -34,7 +34,7 @@ def getDevList(source='local'):
         for id in devIds:
             devList.append(Developer(id))
     elif source == 'mysql':
-        devList = Developer.getAllIdFromMysql()
+        devList = Developer.getAllTestld()
     return devList
 
 def pmdAnalysis(proj, ci):
