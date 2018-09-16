@@ -1,0 +1,81 @@
+Project:
+  proj_id
+  star
+  proj_dir
+  avgVio
+  ----
+  setProjStar
+  setProjDir
+  setAvgVio
+  
+Developer:
+  dev_id
+  name
+  score
+  fileNumber
+  solvedIssueNumber
+  workingTime
+  ----
+  getAllTestld
+  isMemberOf
+  
+Commit:
+  com_id
+  vioFileList
+  score
+  dev_id
+  sha
+  ----
+  hasParent
+  getParent
+  
+Myfile:
+  fileFullName # projectname/src/main/xxx/xxx.java
+  vioList # [violation obj]
+  LOC # readline count
+  score
+  level # =1
+  
+Viopresent:
+  vioName
+  preList # [[com_id, times], ...]
+  distime
+  pretime
+  
+Issue:
+  issue_id
+  iss_proj_id
+  iss_reporter_id
+  iss_hasPr
+  iss_created_ad
+  iss_devEff
+  iss_duringTime
+  iss_workLoad
+  ----
+  getEfficiencyData
+  
+PullRequest:
+  pr_proj_id
+  pr_id
+  ----
+  getEfficiencyData
+  
+  
+  
+  
+  
+...
+<relative-time datetime="2013-02-19T16:19:55Z">Feb 19, 2013</relative-time>
+...
+<div class="tabnav tabnav-pr">
+    <div class="tabnav-extra float-right">
+      <span class="diffstat" id="diffstat">
+        <span class="text-green">
+          +84
+        </span>
+        <span class="text-red">
+          −30
+        </span>
+        <span class="tooltipped tooltipped-s" aria-label="114 lines changed">
+
+'''
