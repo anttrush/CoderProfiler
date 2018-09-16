@@ -5,6 +5,7 @@ import math
 import pymysql
 import os
 import datetime
+import requests
 
 db = pymysql.connect("192.168.3.123", "ght", "ght", "github")
 cursor = db.cursor()
