@@ -1,0 +1,40 @@
+top 1000 star java proj
+some will get gbk error was blocked out
+826 avalibal
+
+高star
+86538111,Signal-Android,10491
+18025548,HanLP,9306
+72576088,PermissionsDispatcher,8152
+3449537,PagerSlidingTabStrip,6627
+26148826,material-theme-jetbrains,6411
+11610797,storm,5373  
+未处理
+15444059,ViewPagerIndicator,2202
+18583902,android,1940
+1366147,neo4j,5616
+95358827,ActiveAndroid,4613
+10957348,FloatingActionButton,3992
+21896761,dexposed,3961
+32026360,ctci,4315
+54447913,walle,3772
+11385430,android-common,3180
+16413483,LoganSquare,3164
+27322963,GalleryFinal,3127
+16416,gephi,2913
+11850935,JamsMusicPlayer,2855
+18195577,android-betterpickers,2719
+37368228,Java,2795
+63188106,sugar,2558
+67778998,pulsar,2465
+71020762,ViewpagerTransition,2580
+92587122,bisq,2472
+11541492,weixin-java-tools,2196
+12564049,ViewPagerIndicator,2202
+16153227,AndroidTagGroup,2192
+12473047,android,1940
+22205189,ignite,2046
+23954782,PhotoView,2077
+95170246,SimpleCropView,2058
+5378,Bukkit,1866
+59010108,PersistentSearch,1899

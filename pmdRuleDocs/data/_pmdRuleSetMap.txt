@@ -1,0 +1,8 @@
+1-44	bestpractices	44	
+45-103	codestyle		59	
+104-148	design			45	
+149-153	documentation	5	
+154-250	errorprone		97	
+251-260	multithreading	10	
+261-290	performance		30	
+291-292	security		2	

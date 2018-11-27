@@ -10,9 +10,13 @@ cursor = db.cursor()
 cursor.execute("SELECT VERSION()")
 data = cursor.fetchone()
 print ("Database version : %s " % data)
+emptyAPIs = {'java.lang':0, 'java.util':0, 'java.rmi':0, 'java.net':0, 'java.beans':0, 'java.nio':0, 'java.io':0, 'java.sql':0, 'java.security':0, 'java.math':0, 'java.text':0, 'java.awt':0, 'others':0}
+EmptyVioClassDict = {'Best Practices':0, 'Code Style':0,'Design':0, 'Documentation':0,'Error Prone':0, 'Multithreading':0,'Performance':0, 'Security':0}
+APIkeys = ['java.lang', 'java.util', 'java.rmi', 'java.net', 'java.beans', 'java.nio', 'java.io', 'java.sql', 'java.security', 'java.math', 'java.text', 'java.awt', 'others']
+VioClasskeys = ['Best Practices', 'Code Style','Design', 'Documentation','Error Prone', 'Multithreading','Performance', 'Security']
 
 class Project(object):
-    def __init__(self, id):
+    def __init__(self, id, star=0, c0id=0):
         self.proj_id = id
         # get name from mysql, get star by func setProjStar --> change db table to add one column to store stars ?
         sql = 'select name, url from projects where id=' + str(self.proj_id)
@@ -21,9 +25,11 @@ class Project(object):
         self.name = res[0][0]
         # https://api.github.com/repos/tosch/ruote-kit => https://github.com/tosch/ruote-kit/
         self.url = res[0][1].replace(r'//api.github','//github').replace(r'/repos/','/')
-
-    def setProjStar(self, star):
         self.star = star
+        if c0id == 0:
+            self.c0 = None
+        else:
+            self.c0 = Commit(c0id)
 
     def setProjDir(self, repdir):
         self.proj_dir = os.path.join(repdir, self.name)
@@ -48,17 +54,28 @@ class Developer(object):
         logger.info(len(devList), devList[:5])
         return devList
 
-    def __init__(self, id):
-        self.dev_id = id
-        sql = 'select login from users where id=' + str(self.dev_id)
-        cursor.execute(sql)
-        res = cursor.fetchall()
-        self.name = res[0][0]
-        self.score = Violation.EmptyVioClassDict.copy()
-        self.fileNumber = 0
-        # for 'efficiency'
-        self.solveIssueNumber = 0
-        self.workTime = 0
+    def __init__(self, id, login=None):
+        if not login:
+            self.dev_id = id
+            sql = 'select login from users where id=' + str(self.dev_id)
+            cursor.execute(sql)
+            res = cursor.fetchall()
+            self.name = res[0][0]
+            self.score = EmptyVioClassDict.copy()
+            self.APIs = emptyAPIs.copy()
+            self.fileNumber = 0
+            # for 'efficiency'
+            self.cLOC = 0
+            self.ctime = 0
+        else:
+            self.dev_id = id
+            self.name = login
+            self.score = EmptyVioClassDict.copy()
+            self.APIs = emptyAPIs.copy()
+            self.fileNumber = 0
+            # for 'efficiency'
+            self.cLOC = 0
+            self.ctime = 0
 
     # not used
     def isMemberOf(self, proj_id):
@@ -74,7 +91,10 @@ class Commit(object):
     def __init__(self, id):
         self.com_id = id
         self.vioFileList = []
-        self.score = Violation.EmptyVioClassDict.copy()
+        self.score = EmptyVioClassDict.copy()
+        self.APIs = emptyAPIs.copy()
+        self.cLOC = 0
+        self.ctime = 0
         sql = 'select author_id, sha from commits where id=' + str(self.com_id)
         cursor.execute(sql)
         res = cursor.fetchall()
@@ -111,11 +131,11 @@ class Myfile(object):
         self.fileFullName = filefullname
         self.vioList = violist
         self.LOC = loc
-        self.score = Violation.EmptyVioClassDict.copy()
+        self.score = EmptyVioClassDict.copy()
         self.level = level
 
 class Violation(object):
-    EmptyVioClassDict = {'Best Practices':0, 'Code Style':0,'Design':0, 'Documentation':0,'Error Prone':0, 'Multithreading':0,'Performance':0, 'Security':0}
+    # EmptyVioClassDict = {'Best Practices':0, 'Code Style':0,'Design':0, 'Documentation':0,'Error Prone':0, 'Multithreading':0,'Performance':0, 'Security':0}
     def __init__(self, vioname, vioclass, priority):
         self.vioName = vioname
         self.vioClass = vioclass

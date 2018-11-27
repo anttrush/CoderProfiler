@@ -1,0 +1,10 @@
+AvoidSynchronizedAtMethodLevel
+AvoidThreadGroup
+AvoidUsingVolatile
+DoNotUseThreads
+DontCallThreadRun
+DoubleCheckedLocking
+NonThreadSafeSingleton
+UnsynchronizedStaticDateFormatter
+UseConcurrentHashMap
+UseNotifyAllInsteadOfNotify

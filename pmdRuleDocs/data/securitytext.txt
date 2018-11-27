@@ -1,0 +1,3 @@
+ Rules that flag potential security flaws.     
+ Do not use hard coded values for cryptographic operations. Please store keys outside of source code.         
+ Do not use hard coded initialization vector in cryptographic operations. Please use a randomly generated IV.         

@@ -1,0 +1,2 @@
+D:\code\python\CoderProfiler>java -classpath ".;D:\lib\*" UserAbilityModel.Parser.JavaParser "D:\科研\CodeQualityAnalysis\CodeAnalysis\PMD\40425610ChangedFile.txt"
+{"com.weibo":40,"java.lang":6}

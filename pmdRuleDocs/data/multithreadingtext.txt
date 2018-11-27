@@ -1,0 +1,11 @@
+ Rules that flag issues when dealing with multiple threads of execution.     
+ Method-level synchronization can cause problems when new code is added to the method. Block-level synchronization helps to ensure that only the code that needs synchronization gets it.         
+ Avoid using java.lang.ThreadGroup; although it is intended to be used in a threaded environment it contains methods that are not thread-safe.         
+ Use of the keyword 'volatile' is generally used to fine tune a Java application, and therefore, requires a good expertise of the Java Memory Model. Moreover, its range of action is somewhat misknown. Therefore, the volatile keyword should not be used for maintenance purpose and portability.         
+ The J2EE specification explicitly forbids the use of threads.         
+ Explicitly calling Thread.run() method will execute in the caller's thread of control.  Instead, call Thread.start() for the intended behavior.         
+http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html>         
+ Non-thread safe singletons can result in bad state changes. Eliminate static singletons if possible by instantiating the object directly. Static singletons are usually not needed as only a single instance exists anyway. Other possible fixes are to synchronize the entire method or to use an [initialize-on-demand holder class](https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom).  Refrain from using the double-checked locking pattern. The Java Memory Model doesn't guarantee it to work unless the variable is declared as `volatile`, adding an uneeded performance penalty. [Reference](http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html)  See Effective Java, item 48.         
+ SimpleDateFormat instances are not synchronized. Sun recommends using separate format instances for each thread. If multiple threads must access a static formatter, the formatter must be synchronized either on method or block level.         
+ Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can perform efficient map reads without blocking other threads.         
+ Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only one is chosen.  The thread chosen is arbitrary; thus its usually safer to call notifyAll() instead.         

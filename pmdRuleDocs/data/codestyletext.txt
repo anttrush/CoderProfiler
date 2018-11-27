@@ -1,0 +1,60 @@
+         Rules which enforce a specific coding style.     
+             Abstract classes should be named 'AbstractXXX'.         
+         
+ Avoid using dollar signs in variable/method/class/interface names.         
+Avoid using final local variables, turn them into fields.
+ Prefixing parameters by 'in' or 'out' pollutes the name of the parameters and reduces code readability. To indicate whether or not a parameter will be modify in a method, its better to document method behavior with Javadoc.         
+ Do not use protected fields in final classes since they cannot be subclassed. Clarify your intent by using private or package access modifiers instead.         
+ Do not use protected methods in most final classes since they cannot be subclassed. This should only be allowed in final classes that extend other classes with protected methods (whose visibility cannot be reduced). Clarify your intent by using private or package access modifiers instead.         
+ Unnecessary reliance on Java Native Interface (JNI) calls directly reduces application portability and increases the maintenance burden.         
+ Methods that return boolean results should be named as predicate statements to denote this. I.e, 'isReady()', 'hasValues()', 'canCommit()', 'willFail()', etc.   Avoid the use of the 'get' prefix for these methods.         
+ It is a good practice to call super() in a constructor. If super() is not called but another constructor (such as an overloaded constructor) is called, this rule will not report it.         
+             Configurable naming conventions for type declarations. This rule reports             type declarations which do not match the regex that applies to their             specific kind (e.g. enum or interface). Each regex can be configured through             properties.              By default this rule uses the standard Java naming convention (Pascal case),             and reports utility class names not ending with 'Util'.         
+ To avoid mistakes if we want that a Method, Constructor, Field or Nested class have a default access modifier we must add a comment at the beginning of it's declaration. By default the comment must be /* default */ or /* package */, if you want another, you have to provide a regular expression.         
+ Avoid negation within an "if" expression with an "else" clause.  For example, rephrase: `if (x != y) diff(); else same();` as: `if (x == y) same(); else diff();`.  Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this rule makes the code easier to read.  Also, this resolves trivial ordering problems, such as "does the error case go first?" or "does the common case go first?".         
+             Enforce a policy for braces on control statements. It is recommended to use braces on 'if ... else'             statements and loop statements, even if they are optional. This usually makes the code clearer, and             helps prepare the future when you need to add another statement. That said, this rule lets you control             which statements are required to have braces via properties.              From 6.2.0 on, this rule supersedes WhileLoopMustUseBraces, ForLoopMustUseBraces, IfStmtMustUseBraces,             and IfElseStmtMustUseBraces.         
+ Use explicit scoping instead of accidental usage of default package private level. The rule allows methods and fields annotated with Guava's @VisibleForTesting.         
+ Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).         
+ Duplicate or overlapping import statements should be avoided.         
+ Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate usage by developers who should be implementing their own versions in the concrete subclasses.         
+No need to explicitly extend Object.
+ Fields should be declared at the top of the class, before any method declarations, constructors, initializers or inner classes.         
+             Configurable naming conventions for field declarations. This rule reports variable declarations             which do not match the regex that applies to their specific kind ---e.g. constants (static final),             enum constant, final field. Each regex can be configured through properties.              By default this rule uses the standard Java naming convention (Camel case), and uses the ALL_UPPER             convention for constants and enum constants.         
+ Some for loops can be simplified to while loops, this makes them more concise.         
+ Avoid using 'for' statements without using curly braces. If the code formatting or  indentation is lost then it becomes difficult to separate the code being controlled  from the rest.         
+             Configurable naming conventions for formal parameters of methods and lambdas.             This rule reports formal parameters which do not match the regex that applies to their             specific kind (e.g. lambda parameter, or final formal parameter). Each regex can be             configured through properties.              By default this rule uses the standard Java naming convention (Camel case).         
+ Names for references to generic values should be limited to a single uppercase letter.         
+             Identical `catch` branches use up vertical space and increase the complexity of code without             adding functionality. It's better style to collapse identical branches into a single multi-catch             branch.         
+ Avoid using if..else statements without using surrounding braces. If the code formatting  or indentation is lost then it becomes difficult to separate the code being controlled  from the rest.         
+ Avoid using if statements without using braces to surround the code block. If the code  formatting or indentation is lost then it becomes difficult to separate the code being controlled from the rest.         
+             This rule finds Linguistic Naming Antipatterns. It checks for fields, that are named, as if they should             be boolean but have a different type. It also checks for methods, that according to their name, should             return a boolean, but don't. Further, it checks, that getters return something and setters won't.             Finally, it checks that methods, that start with "to" - so called transform methods - actually return             something, since according to their name, they should convert or transform one object into another.             There is additionally an option, to check for methods that contain "To" in their name - which are             also transform methods. However, this is disabled by default, since this detection is prone to             false positives.              For more information, see [Linguistic Antipatterns - What They Are and How Developers Perceive Them](https://doi.org/10.1007/s10664-014-9350-8).         
+ The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.         
+ The Local Interface of a Session EJB should be suffixed by 'Local'.         
+ A local variable assigned only once can be declared final.         
+             Configurable naming conventions for local variable declarations and other locally-scoped             variables. This rule reports variable declarations which do not match the regex that applies to their             specific kind (e.g. final variable, or catch-clause parameter). Each regex can be configured through             properties.              By default this rule uses the standard Java naming convention (Camel case).         
+ Fields, formal arguments, or local variable names that are too long can make the code difficult to follow.         
+ The EJB Specification states that any MessageDrivenBean or SessionBean should be suffixed by 'Bean'.         
+ A method argument that is never re-assigned within the method can be declared final.         
+             Configurable naming conventions for method declarations. This rule reports             method declarations which do not match the regex that applies to their             specific kind (e.g. JUnit test or native method). Each regex can be             configured through properties.              By default this rule uses the standard Java naming convention (Camel case).         
+ Detects when a non-field has a name starting with 'm_'.  This usually denotes a field and could be confusing.         
+ Detects when a class or interface does not have a package definition.         
+ A method should have only one exit point, and that should be the last statement in the method.         
+ Detects when a package definition contains uppercase characters.         
+ Checks for variables that are defined before they might be used. A reference is deemed to be premature if it is created right before a block of code that doesn't use it that also has the ability to return or throw an exception.         
+ Remote Interface of a Session EJB should not have a suffix.         
+ A Remote Home interface type of a Session EJB should be suffixed by 'Home'.         
+ Short Classnames with fewer than e.g. five characters are not recommended.         
+ Method names that are very short are not helpful to the reader.         
+ Fields, local variables, or parameter names that are very short are not helpful to the reader.         
+ Field names using all uppercase characters - Sun's Java naming conventions indicating constants - should be declared as final.         
+ If you overuse the static import feature, it can make your program unreadable and  unmaintainable, polluting its namespace with all the static members you import.  Readers of your code (including you, a few months after you wrote it) will not know  which class a static member comes from (Sun 1.5 Language Guide).         
+             Avoid the use of value in annotations when it's the only element.         
+ This rule detects when a constructor is not necessary; i.e., when there is only one constructor and the constructor is identical to the default constructor. The default constructor should has same access modifier as the declaring class. In an enum type, the default constructor is implicitly private.         
+ Import statements allow the use of non-fully qualified names.  The use of a fully qualified name which is covered by an import statement is redundant.  Consider using the non-fully qualified name.         
+ Avoid the creation of unnecessary local variables         
+ Fields in interfaces and annotations are automatically `public static final`, and methods are `public abstract`. Classes, interfaces or annotations nested in an interface or annotation are automatically `public static` (all nested interfaces and annotations are automatically static). Nested enums are automatically `static`. For historical reasons, modifiers which are implied by the context are accepted by the compiler, but are superfluous.         
+ Avoid the use of unnecessary return statements.         
+Useless parentheses should be removed.
+Look for qualified this usages in the same class.
+ A variable naming conventions rule - customize this to your liking.  Currently, it checks for final variables that should be fully capitalized and non-final variables that should not include underscores.         
+ Avoid using 'while' statements without using braces to surround the code block. If the code  formatting or indentation is lost then it becomes difficult to separate the code being controlled from the rest.         

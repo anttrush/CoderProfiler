@@ -1,0 +1,45 @@
+  Rules which enforce generally accepted best practices.      
+  The abstract class does not contain any abstract methods. An abstract class suggests  an incomplete implementation, which is to be completed by subclasses implementing the  abstract methods. If the class is intended to be used as a base class only (not to be instantiated  directly) a protected constructor can be provided prevent direct instantiation.          
+  Instantiation by way of private constructors from outside of the constructor's class often causes the  generation of an accessor. A factory method, or non-privatization of the constructor can eliminate this  situation. The generated class file is actually an interface.  It gives the accessing class the ability  to invoke a new hidden package scope constructor that takes the interface as a supplementary parameter.  This turns a private constructor effectively into one with package scope, and is challenging to discern.          
+  When accessing a private field / method from another class, the Java compiler will generate a accessor methods  with package-private visibility. This adds overhead, and to the dex method count on Android. This situation can  be avoided by changing the visibility of the field / method from private to package-private.          
+  Constructors and methods receiving arrays should clone objects and store the copy.  This prevents future changes from the user from affecting the original array.          
+  Avoid printStackTrace(); use a logger call instead.          
+  Reassigning values to incoming parameters is not recommended.  Use temporary local variables instead.          
+  StringBuffers/StringBuilders can grow considerably, and so may become a source of memory leaks  if held within objects with long lifetimes.          
+  Application with hard-coded IP addresses can become impossible to deploy in some cases.  Externalizing IP adresses is preferable.          
+  Always check the return values of navigation methods (next, previous, first, last) of a ResultSet.  If the value return is 'false', it should be handled properly.          
+  Avoid constants in interfaces. Interfaces should define types, constants are implementation details  better placed in classes or enums. See Effective Java, item 19.          
+  By convention, the default label should be the last label in a switch statement.          
+  Reports loops that can be safely replaced with the foreach syntax. The rule considers loops over  lists, arrays and iterators. A loop is safe to replace if it only uses the index variable to  access an element of the list or array, only has one update statement, and loops through *every*  element of the list or array left to right.          
+  Whenever using a log level, one should check if the loglevel is actually enabled, or  otherwise skip the associate String creation and manipulation.          
+  In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites are indicated  through the @RunWith(Suite.class) annotation.          
+  In JUnit 3, the tearDown method was used to clean up all data entities required in running tests.   JUnit 4 skips the tearDown method and executes all methods annotated with @After after running each test.  JUnit 5 introduced @AfterEach and @AfterAll annotations to execute methods after each test or after all tests in the class, respectively.          
+  In JUnit 3, the setUp method was used to set up all data entities required in running tests.   JUnit 4 skips the setUp method and executes all methods annotated with @Before before all tests.  JUnit 5 introduced @BeforeEach and @BeforeAll annotations to execute methods before each test or before all tests in the class, respectively.          
+  In JUnit 3, the framework executed all methods which started with the word test as a unit test.   In JUnit 4, only methods annotated with the @Test annotation are executed.  In JUnit 5, one of the following annotations should be used for tests: @Test, @RepeatedTest, @TestFactory, @TestTemplate or @ParameterizedTest.          
+  JUnit assertions should include an informative message - i.e., use the three-argument version of   assertEquals(), not the two-argument version.          
+  Unit tests should not contain too many asserts. Many asserts are indicative of a complex test, for which   it is harder to verify correctness.  Consider breaking the test scenario into multiple, shorter test scenarios.  Customize the maximum number of assertions used by this Rule to suit your needs.    This rule checks for JUnit4, JUnit5 and TestNG Tests, as well as methods starting with "test".          
+  JUnit tests should include at least one assertion.  This makes the tests more robust, and using assert   with messages provide the developer a clearer idea of what the test does.          
+  In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions.          
+  The use of implementation types (i.e., HashSet) as object references limits your ability to use alternate  implementations in the future as requirements change. Whenever available, referencing objects  by their interface types (i.e, Set) provides much more flexibility.          
+  Exposing internal arrays to the caller violates object encapsulation since elements can be   removed or replaced outside of the object that owns it. It is safer to return a copy of the array.          
+              Annotating overridden methods with @Override ensures at compile time that              the method really overrides one, which helps refactoring and clarifies intent.          
+  Java allows the use of several variables declaration of the same type on one line. However, it  can lead to quite messy code. This rule looks for several declarations on the same line.          
+  Position literals first in comparisons, if the second argument is null then NullPointerExceptions  can be avoided, they will just return false.          
+  Position literals first in comparisons, if the second argument is null then NullPointerExceptions  can be avoided, they will just return false.          
+  Throwing a new exception from a catch block without passing the original exception into the  new exception will cause the original stack trace to be lost making it difficult to debug  effectively.          
+  Consider replacing Enumeration usages with the newer java.util.Iterator          
+  Consider replacing Hashtable usage with the newer java.util.Map if thread safety is not required.          
+  Consider replacing Vector usages with the newer java.util.ArrayList if expensive thread-safe operations are not required.          
+  All switch statements should include a default option to catch any unspecified values.          
+  References to System.(out|err).print are usually intended for debugging purposes and can remain in  the codebase even in production code. By using a logger one can enable/disable this behaviour at  will (and by priority) and avoid clogging the Standard out log.          
+  Avoid passing parameters to methods or constructors without actually referencing them in the method body.          
+  Avoid unused import statements to prevent unwanted dependencies.  This rule will also find unused on demand imports, i.e. import com.foo.*.          
+  Detects when a local variable is declared and/or assigned, but not used.          
+  Detects when a private field is declared and/or assigned a value, but not used.          
+  Unused Private Method detects when a private method is declared but is unused.          
+  This rule detects JUnit assertions in object equality. These assertions should be made by more specific methods, like assertEquals.          
+  This rule detects JUnit assertions in object references equality. These assertions should be made by   more specific methods, like assertNull, assertNotNull.          
+  This rule detects JUnit assertions in object references equality. These assertions should be made   by more specific methods, like assertSame, assertNotSame.          
+  When asserting a value is the same as a literal or Boxed boolean, use assertTrue/assertFalse, instead of assertEquals.          
+  The isEmpty() method on java.util.Collection is provided to determine if a collection has any elements.  Comparing the value of size() to 0 does not convey intent as well as the isEmpty() method.          
+  Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic  sugar provides flexibility for users of these methods and constructors, allowing them to avoid  having to deal with the creation of an array.          
