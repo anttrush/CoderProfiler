@@ -1,7 +1,9 @@
 inpithead = ['id', 'login', 'Best Practices', 'Code Style','Design', 'Documentation','Error Prone', 'Multithreading','Performance', 'Security','java.lang', 'java.util', 'java.rmi', 'java.net', 'java.beans', 'java.nio', 'java.io', 'java.sql', 'java.security', 'java.math', 'java.text', 'java.awt', 'others','cLOC','effe']
-outputhead = ['id', 'login', 'Code Style','Design', 'Documentation','Error Prone', 'Performance', 'Multithreading', 'Security', 'others', 'text', 'graph', 'math', 'net', 'IO', 'database', 'security', 'others','effe' ,'cLOC']
+outputhead = ['id', 'login', 'Code Style','Design', 'Documentation','Error Prone', 'Performance', 'Multithreading', 'Security', 'others', 'text', 'graph', 'math', 'net', 'IO', 'database', 'security', 'others','effe' ,'cLOC', 'followerNum']
 import pymysql
 import math
+import numpy as np
+import matplotlib.pyplot as plt
 db = pymysql.connect(host="10.1.1.61", port=36810, user="visitor", passwd="visitor", db="ghtorrent_restore")
 cursor = db.cursor()
 cursor.execute("SELECT VERSION()")
@@ -15,10 +17,12 @@ class Coder:
         self.Ascore = [float(datalist[3]), float(datalist[4]), float(datalist[5]), float(datalist[6]), float(datalist[8]), float(datalist[7]), float(datalist[9]), float(datalist[2])]
         self.Pscore = [float(datalist[20]), float(datalist[21]), float(datalist[19]), float(datalist[13])+float(datalist[14]), float(datalist[15])+float(datalist[16]), float(datalist[17]), float(datalist[18]), float(datalist[10])+float(datalist[11])+float(datalist[12])+float(datalist[22])]
         for i in range(8):
-            self.Pscore[i] = math.log(self.Pscore[i]+1, 10)
+            self.Pscore[i] = math.log10(self.Pscore[i]+1)
         self.effe = float(datalist[24])
+        self.effe = math.log10(self.effe+0.0001)
         self.cLOC = int(datalist[23])
         self.followerN = 0
+
 
 followerlist = {}
 with open("followers.txt") as fn:
@@ -26,7 +30,8 @@ with open("followers.txt") as fn:
         if not line or line == '':
             break
         data = line.strip().split()
-        followerlist[data[0]] = data[2]
+        if data[2] != "-1":
+            followerlist[data[0]] = data[2]
 
 coderlist = []
 with open("CoderProfileResults1127.csv", 'r') as f:
@@ -45,8 +50,10 @@ with open("CoderProfileResults1127.csv", 'r') as f:
             coder.followerN = str(data[0][0])
 
 
+
 Mincoder = Coder(['inf'] * 23+['1000', 'inf'])
 Maxcoder = Coder(['0'] * 25)
+avecoder = Coder(['0'] * 25)
 total = 0
 for coder in coderlist:
     total += 1
@@ -55,8 +62,23 @@ for coder in coderlist:
         Mincoder.Pscore[i] = min(Mincoder.Pscore[i], coder.Pscore[i])
         Maxcoder.Ascore[i] = max(Maxcoder.Ascore[i], coder.Ascore[i])
         Maxcoder.Pscore[i] = max(Maxcoder.Pscore[i], coder.Pscore[i])
-    Mincoder.effe = min(Mincoder.effe, coder.effe)
-    Maxcoder.effe = max(Maxcoder.effe, coder.effe)
+        avecoder.Ascore[i] += coder.Ascore[i]
+        avecoder.Pscore[i] += coder.Pscore[i]
+    Maxcoder.effe = max(coder.effe,Maxcoder.effe)
+    Mincoder.effe = min(coder.effe,Maxcoder.effe)
+    avecoder.effe += coder.effe
+
+
+
+# avecoder.effe = 30 + 70 * (avecoder.effe - Mincoder.effe) / (Maxcoder.effe - Mincoder.effe)
+for i in range(8):
+    avecoder.Ascore[i] /= total
+    avecoder.Ascore[i] = 30 + 70 * (avecoder.Ascore[i] - Mincoder.Ascore[i]) / (Maxcoder.Ascore[i] - Mincoder.Ascore[i])
+    avecoder.Pscore[i] /= total
+    avecoder.Pscore[i] = 0 + 100 * (avecoder.Pscore[i] - Mincoder.Pscore[i]) / (Maxcoder.Pscore[i] - Mincoder.Pscore[i])
+avecoder.effe /= total
+avecoder.effe = 0 + 100 * (avecoder.effe - Mincoder.effe) / (Maxcoder.effe - Mincoder.effe)
+
 for coder in coderlist:
     for i in range(8):
         if coder.Ascore[i] != 0:
@@ -64,7 +86,7 @@ for coder in coderlist:
         else:
             coder.Ascore[i] = 72
         coder.Pscore[i] = 0+ 100 * (coder.Pscore[i] - Mincoder.Pscore[i]) / (Maxcoder.Pscore[i] - Mincoder.Pscore[i])
-    coder.effe = 30 + 70 * (coder.effe - Mincoder.effe) / (Maxcoder.effe - Mincoder.effe)
+    coder.effe = 0 + 100 * (coder.effe - Mincoder.effe) / (Maxcoder.effe - Mincoder.effe)
 
 
 
